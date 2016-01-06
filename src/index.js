@@ -36,20 +36,18 @@ const Counter = ({
   </div>
 )
 
-const counter = (state = {}, action) => {
-  let currentValue = state.value || 0;
-
+const counter = (state = {value: 0}, action) => {
   switch (action.type) {
     case 'INCREMENT':
        return {
          ...state,
-         value: currentValue + 1
+         value: state.value + 1
        };
 
     case 'DECREMENT':
       return {
         ...state,
-        value: currentValue - 1
+        value: state.value - 1
       };
 
     default:
@@ -61,12 +59,11 @@ const store = createStore(counter);
 
 const render = () => {
   let state = store.getState()
-  let currentValue = state.value || 0;
 
   ReactDOM.render(
     <div>
       <Counter
-        value={currentValue}
+        value={state.value}
         onIncrement={() =>
           store.dispatch({
             type: "INCREMENT"
