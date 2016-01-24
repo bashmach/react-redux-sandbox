@@ -1,40 +1,69 @@
 import React, { Component } from 'react';
 
 const Counter = ({
-    value,
-    onIncrement,
-    onDecrement
-    }) => (
-    <div>
-        <h1>{value}</h1>
-        <button onClick={onIncrement}>+</button>
-        <button onClick={onDecrement}>-</button>
-    </div>
+  counter,
+  onIncrement,
+  onDecrement
+}) => (
+  <div>
+    <h1>{counter.value}</h1>
+    <button onClick={e => {
+      e.preventDefault();
+      onIncrement(counter.id);
+    }}> INCR
+    </button>
+    <button onClick={e => {
+      e.preventDefault();
+      onDecrement(counter.id);
+    }}> DECR
+    </button>
+  </div>
+)
+
+const Counters = ({
+  counters,
+  onIncrement,
+  onDecrement
+}) => (
+  <div>
+    <h2>Counters:</h2>
+    {counters.map(counter =>
+      <Counter
+        key={counter.id}
+        counter={counter}
+        onIncrement={onIncrement}
+        onDecrement={onDecrement}
+      />
+    )}
+  </div>
 )
 
 class App extends Component {
-    render() {
-        let store = this.props.store;
-        let state = store.getState();
+  render() {
+    let store = this.props.store;
 
-        return (
-            <div>
-                <Counter
-                    value={state.value}
-                    onIncrement={() =>
-                      store.dispatch({
-                        type: "INCREMENT"
-                      })
-                    }
-                    onDecrement={() =>
-                      store.dispatch({
-                        type: "DECREMENT"
-                      })
-                    }
-                />
-            </div>
-        );
-    }
+    return (
+      <div>
+        <Counters
+          {...store.getState()}
+
+          onIncrement={(id) =>
+            store.dispatch({
+              type: "INCREMENT",
+              id
+            })
+          }
+
+          onDecrement={(id) =>
+            store.dispatch({
+              type: "DECREMENT",
+              id
+            })
+          }
+        />
+      </div>
+    );
+  }
 }
 
 export default App;

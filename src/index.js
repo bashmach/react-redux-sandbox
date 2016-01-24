@@ -12,48 +12,71 @@ import DockMonitor from 'redux-devtools-dock-monitor';
 
 // createDevTools takes a monitor and produces a DevTools component
 const DevTools = createDevTools(
-    // Monitors are individually adjustable with props.
-    // Consult their repositories to learn about those props.
-    // Here, we put LogMonitor inside a DockMonitor.
-    <DockMonitor toggleVisibilityKey='alt-w'
-                 changePositionKey='ctrl-q'>
-        <LogMonitor theme='tomorrow' />
-    </DockMonitor>
+  // Monitors are individually adjustable with props.
+  // Consult their repositories to learn about those props.
+  // Here, we put LogMonitor inside a DockMonitor.
+  <DockMonitor toggleVisibilityKey='alt-w'
+               changePositionKey='ctrl-q'>
+    <LogMonitor theme='tomorrow'/>
+  </DockMonitor>
 );
 
 let createStore = compose(
-    DevTools.instrument()
+  DevTools.instrument()
 )(originCreateStore);
 
-const counter = (state = {value: 0}, action) => {
-    switch (action.type) {
-        case 'INCREMENT':
-            return {
-                ...state,
-                value: state.value + 1
-            };
+const defaultState = {
+  counters: [{id: 1, value: 0}, {id: 2, value: 0}]
+};
 
-        case 'DECREMENT':
-            return {
-                ...state,
-                value: state.value - 1
-            };
+const counter = (state = {}, action) => {
+  if (state.id !== action.id) {
+    return state;
+  }
 
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case 'INCREMENT':
+      return {
+        ...state,
+        value: state.value + 1
+      };
+    case 'DECREMENT':
+      return {
+        ...state,
+        value: state.value - 1
+      };
+    default:
+      return state;
+  }
 }
 
-const store = createStore(counter);
+const counters = (state = defaultState, action) => {
+
+  switch (action.type) {
+    case 'INCREMENT':
+    case 'DECREMENT':
+      return {
+        ...state,
+        counters: state.counters.map(c => {
+          return counter(c, action)
+        })
+      };
+
+    default:
+      return state;
+  }
+}
+
+const store = createStore(counters);
 
 const render = () => {
-    ReactDOM.render(
-        <div>
-            <App store={store}/>
-            <DevTools store={store}/>
-        </div>,
-        document.getElementById('root')
-    );
+  ReactDOM.render(
+    <div>
+      <App store={store}/>
+      <DevTools store={store}/>
+    </div>,
+    document.getElementById('root')
+  );
 }
 
 store.subscribe(render);
