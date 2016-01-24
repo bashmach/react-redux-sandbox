@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 import { createStore as originCreateStore, applyMiddleware, compose } from 'redux';
 
-import App from './App';
+import App from './components/App';
 import DevTools from './DevTools';
 import reducers from './reducers';
 
@@ -13,16 +14,12 @@ const createStore = compose(
 
 const store = createStore(reducers);
 
-const render = () => {
-  ReactDOM.render(
-    <div>
-      <App store={store}/>
-      <DevTools store={store}/>
-    </div>,
-    document.getElementById('root')
-  );
-}
-
-store.subscribe(render);
-
-render();
+ReactDOM.render(
+  <div>
+    <Provider store={store}>
+      <App />
+    </Provider>
+    <DevTools store={store} />
+  </div>,
+  document.getElementById('root')
+);

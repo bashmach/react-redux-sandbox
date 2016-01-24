@@ -1,21 +1,28 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export default ({
-  counter,
-  onIncrement,
-  onDecrement
-}) => (
-  <div>
-    <h1>{counter.value}</h1>
-    <button onClick={e => {
-      e.preventDefault();
-      onIncrement(counter.id);
-    }}> INCR
-    </button>
-    <button onClick={e => {
-      e.preventDefault();
-      onDecrement(counter.id);
-    }}> DECR
-    </button>
-  </div>
-)
+let Counter = ({id, value, dispatch}) => {
+  return (
+    <div>
+      <h1>{value}</h1>
+      <button onClick={e => {
+        e.preventDefault();
+        dispatch({
+          type: 'INCREMENT',
+          id
+        });
+      }}> INCR
+      </button>
+      <button onClick={e => {
+        e.preventDefault();
+        dispatch({
+          type: 'DECREMENT',
+          id
+        });
+      }}> DECR
+      </button>
+    </div>
+  );
+};
+
+export default connect()(Counter);
