@@ -41,7 +41,6 @@ const Counters = ({
 class App extends Component {
   render() {
     let store = this.props.store;
-
     return (
       <div>
         <Counters
